@@ -1,24 +1,11 @@
 import { VertexAI } from "@google-cloud/vertexai";
 
-const getGoogleCloudProject = () => {
-  return (
-    process.env.GOOGLE_CLOUD_PROJECT ||
-    process.env.GCLOUD_PROJECT ||
-    process.env.PROJECT_ID
-  );
-};
-
 export const generateInsight = async (data) => {
   try {
-    const projectId = getGoogleCloudProject();
-    const location = process.env.VERTEX_LOCATION || "us-central1";
-    const modelName = process.env.VERTEX_MODEL || "gemini-2.5-flash";
-
-    if (!projectId) {
-      throw new Error(
-        "Falta la variable de entorno GOOGLE_CLOUD_PROJECT, GCLOUD_PROJECT o PROJECT_ID"
-      );
-    }
+    // Valores hardcodeados directamente
+    const projectId = "bussiness-case-tyc";
+    const location = "us-central1";
+    const modelName = "gemini-2.5-flash"; // Asegúrate de que el modelo 2.5 esté disponible en tu cuota/región
 
     const vertexAI = new VertexAI({
       project: projectId,
@@ -52,6 +39,7 @@ Genera:
     };
 
     const result = await model.generateContent(request);
+    
     const insight =
       result.response?.candidates?.[0]?.content?.parts?.[0]?.text ||
       result.response?.candidates?.[0]?.content?.[0]?.parts?.[0]?.text;
