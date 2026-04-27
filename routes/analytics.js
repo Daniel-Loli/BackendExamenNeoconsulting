@@ -102,7 +102,14 @@ router.get("/insights", async (req, res) => {
       `SELECT * FROM \`${DATASET}.vw_ai_insights_input\``
     );
 
-    const insight = await generateInsight(data);
+    let insight = "No disponible";
+
+    try {
+      insight = await generateInsight(data);
+    } catch (e) {
+      console.error("Vertex fallback:", e);
+      insight = "No se pudo generar insight automático";
+    }
 
     res.json({
       insight,
@@ -110,7 +117,6 @@ router.get("/insights", async (req, res) => {
     });
 
   } catch (error) {
-    console.error(error);
     res.status(500).json({ error: error.message });
   }
 });
