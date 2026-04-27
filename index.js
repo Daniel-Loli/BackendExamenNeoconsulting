@@ -4,7 +4,18 @@ import analyticsRoutes from "./routes/analytics.js";
 
 const app = express();
 
-app.use(cors());
+// 🔥 CONFIGURACIÓN CORS CORRECTA
+app.use(
+  cors({
+    origin: "*", // en desarrollo permite todo
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"]
+  })
+);
+
+// 🔥 MUY IMPORTANTE: manejar preflight
+app.options("*", cors());
+
 app.use(express.json());
 
 app.get("/", (req, res) => {
