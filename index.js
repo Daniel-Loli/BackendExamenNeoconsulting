@@ -4,24 +4,21 @@ import analyticsRoutes from "./routes/analytics.js";
 
 const app = express();
 
-// 🔥 CONFIGURACIÓN CORS CORRECTA
+// 🔥 CONFIG CORS SEGURA
 app.use(
   cors({
-    origin: "*", // en desarrollo permite todo
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"]
+    origin: "*",
   })
 );
 
-// 🔥 MUY IMPORTANTE: manejar preflight
-app.options("*", cors());
-
 app.use(express.json());
 
+// 🔹 health check
 app.get("/", (req, res) => {
-  res.send("API Ecommerce funcionando 🚀");
+  res.status(200).send("OK");
 });
 
+// 🔹 rutas
 app.use("/api", analyticsRoutes);
 
 const PORT = process.env.PORT || 8080;
