@@ -1,14 +1,32 @@
 import { VertexAI } from "@google-cloud/vertexai";
 
+const getGoogleCloudProject = () => {
+  return (
+    process.env.GOOGLE_CLOUD_PROJECT ||
+    process.env.GCLOUD_PROJECT ||
+    process.env.PROJECT_ID
+  );
+};
+
 export const generateInsight = async (data) => {
   try {
+    const projectId = getGoogleCloudProject();
+    const location = process.env.VERTEX_LOCATION || "us-central1";
+    const modelName = process.env.VERTEX_MODEL || "gemini-2.5-flash";
+
+    if (!projectId) {
+      throw new Error(
+        "Falta la variable de entorno GOOGLE_CLOUD_PROJECT, GCLOUD_PROJECT o PROJECT_ID"
+      );
+    }
+
     const vertexAI = new VertexAI({
-      project: process.env.GOOGLE_CLOUD_PROJECT,
-      location: "global"
+      project: projectId,
+      location
     });
 
     const model = vertexAI.getGenerativeModel({
-      model: "gemini-2.5-flash"
+      model: modelName
     });
 
     const d = data[0];
@@ -29,12 +47,18 @@ Genera:
 - Recomendaciones
 `;
 
-    const result = await model.generateContent(prompt);
+    const request = {
+      contents: [{ role: "user", parts: [{ text: prompt }] }]
+    };
 
-    return result.response.candidates?.[0]?.content?.parts?.[0]?.text || "No se pudo generar insight";
+    const result = await model.generateContent(request);
+    const insight =
+      result.response?.candidates?.[0]?.content?.parts?.[0]?.text ||
+      result.response?.candidates?.[0]?.content?.[0]?.parts?.[0]?.text;
 
+    return insight || "No se pudo generar insight";
   } catch (error) {
-    console.error("Error Vertex:", error.message);
-    return "Error generando insights";
+    console.error("Error Vertex:", error);
+    return `Error generando insights: ${error.message}`;
   }
 };
