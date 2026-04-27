@@ -53,13 +53,17 @@ router.get("/sales", async (req, res) => {
       `SELECT * FROM \`${DATASET}.vw_sales_trend\``
     );
 
-    res.json(data);
+    const formatted = data.map(row => ({
+      fecha: row.fecha?.value || row.fecha,
+      ingresos: row.ingresos
+    }));
+
+    res.json(formatted);
 
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
-
 
 // 🔹 Productos
 router.get("/products", async (req, res) => {
