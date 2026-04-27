@@ -28,10 +28,20 @@ Ticket promedio: ${d.ticket_promedio}
 Cancelaciones: ${d.tasa_cancelacion}
 Devoluciones: ${d.tasa_devolucion}
 
-Genera:
-- Insights clave
-- Problemas
-- Recomendaciones
+Genera SOLO:
+
+- 3 insights clave (máx 1 línea cada uno)
+- 2 problemas principales
+- 2 recomendaciones accionables
+
+Formato:
+• Insight 1
+• Insight 2
+• Insight 3
+
+⚠ Máximo 120 palabras
+⚠ Sé directo, ejecutivo y accionable
+⚠ NO expliques demasiado
 `;
 
     const request = {
