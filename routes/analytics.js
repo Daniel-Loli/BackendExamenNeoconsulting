@@ -1,7 +1,7 @@
 import express from "express";
 import { runQuery } from "../services/bigquery.js";
 import { translateText } from "../services/translate.js";
-
+import { generateInsight } from "../services/vertex.js";
 const router = express.Router();
 const DATASET = "nilton_ecommerce";
 
@@ -102,22 +102,16 @@ router.get("/insights", async (req, res) => {
       `SELECT * FROM \`${DATASET}.vw_ai_insights_input\``
     );
 
-    const d = data[0];
+    const insight = await generateInsight(data);
 
-    const insight = `
-    Los ingresos totales son ${d.ingresos_totales}.
-    Se registraron ${d.ordenes_totales} órdenes.
-    La tasa de cancelación es ${d.tasa_cancelacion}.
-
-    Recomendación:
-    Optimizar logística y procesos de checkout para reducir cancelaciones.
-    `;
-
-    res.json({ insight, data });
+    res.json({
+      insight,
+      data
+    });
 
   } catch (error) {
+    console.error(error);
     res.status(500).json({ error: error.message });
   }
 });
-
 export default router;
