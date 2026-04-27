@@ -4,7 +4,7 @@ export const generateInsight = async (data) => {
   try {
     const vertexAI = new VertexAI({
       project: process.env.GOOGLE_CLOUD_PROJECT,
-      location: "us-central1"
+      location: "global"
     });
 
     const model = vertexAI.getGenerativeModel({
